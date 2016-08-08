@@ -1,0 +1,5 @@
+ANTENNA	'Julius Rosenberg'
+LIBERAL	'Julius Rosenberg'
+KAPITAN	'President Roosevelt'
+BABYLON	'San Francisco'
+HOLA	'Melita Stedman Norwood'
