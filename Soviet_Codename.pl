@@ -19,6 +19,7 @@ sub CH {
 		push (@CH_PARSE, split (/\t/, $CH_LINE));
 	}
 	%CODE_HASH = (@CH_PARSE);
+	close $CH;
 }
 #INITIAL creation on load
 &CH;
@@ -46,11 +47,22 @@ sub CODE {
 
 #REAL Subroutine
 sub REAL {
+	open (my $CH, "<", "CODENAME_HASH.txt")
+		or die "Can't open < CODENAME_HASH.txt: $!";
 	print "Please enter the Realname:\n";
-	chomp( my $realname = <STDIN> );
-	#DEBUG
-	print "You have entered $realname \n\n";
-	#DEBUG
+	chomp( my $REALNAME = <STDIN> );
+	#Using a counter to let me know if any matching entries were found, it needs to be reset each time.
+	my $n = 0;
+	while ( my $LINE = <$CH> ){
+		if ( $LINE =~ /($REALNAME)/i ){
+			print "$REALNAME, was given the Codename $LINE";
+			$n += 1;
+		}
+	}	
+	if ($n == 0) {
+		print "There are no entries that match $REALNAME.\n\n";
+	}
+	close $CH;
 }
 
 
@@ -66,7 +78,9 @@ sub ENTRY {
 	chomp( my $CONFIRM = <STDIN> );
 	if ( $CONFIRM eq "YES" ){
 		print{$CH} "$ENTRY_C\t\'$ENTRY_R\'\n";
-		}
+	} else {
+		print "ENTRY WAS NOT ADDED!\n";
+	}
 	close $CH;
 	&CH;
 }
@@ -84,6 +98,11 @@ while ( $menu_choice ne "EXIT" ){
 	#CODE
 	if ( $menu_choice eq "CODE" ){
 		&CODE;
+	}
+	
+	#REAL
+	if ( $menu_choice eq "REAL" ){
+		&REAL;
 	}
 	
 	#ENTRY
